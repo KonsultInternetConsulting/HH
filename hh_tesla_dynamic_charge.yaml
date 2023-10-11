@@ -25,7 +25,7 @@ blueprint:
     power_sensor_1_max_value:
       name: Power Sensor 1 Trigger Max Value (W)
       description: This is a absolute max value which will trigger a drop in charging amps.
-      default: -1500
+      default: 0
       selector:
         number:
           min: -20000
@@ -34,7 +34,7 @@ blueprint:
     power_sensor_1_charge_upper_value:
       name: Power Sensor 1 Trigger Upper Value (W)
       description: This is the upper value for the power sensor which will trigger a drop in charging amps.
-      default: -2500
+      default: -500
       selector:
         number:
           min: -20000
@@ -52,7 +52,7 @@ blueprint:
     polling_time:
       name: Polling frequency (Mins)
       description: Number of minutes before checking if charging amps can be increased.
-      default: /5
+      default: /1
       selector:
         select:
           options:
@@ -87,7 +87,7 @@ blueprint:
     tesla_charging_amps_upper_value:
       name: Select the peak amps for charger (Amps)
       description: Select the number of amps that charging should not be increased past. Best set to the maximum charge rate possible with the charger, or a lower value. Not higher than the maximum possible with the charger.
-      default: 8
+      default: 32
       selector:
         number:
           min: 0
@@ -97,7 +97,7 @@ blueprint:
     tesla_charging_amps_lower_value:
       name: Select the minimum amps for charger (Amps)
       description: Select the number of amps to reduce charging to when a power sensor upper/max value is exceeded
-      default: 2
+      default: 0
       selector:
         number:
           min: 0
