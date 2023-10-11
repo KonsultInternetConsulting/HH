@@ -1,17 +1,17 @@
 blueprint:
-  name: Tesla controlled charge rate based on power sensor
+  name: Tesla controlled charge rate based on power sensor NETT type
   description: |
-    ## Tesla controlled charge rate based on power sensor  
+    ## Tesla controlled charge rate based on power sensor NETT type 
 
     Checks every x minutes to find the optimum charging value based on home power usage W.
 
-    Decreases charge rate significantly when a upper or maximum W value is reached by a power sensor.
+    Decreases charge rate significantly when a upper or maximum W value (negative number) is reached by a power sensor.
 
-    Increases charge rate by 1 every x minutes if power sensor is below a lower W value.
+    Increases charge rate by 1 every x minutes if power sensor is below a lower W value (negative number).
 
     **IMPORTANT => Use at your own risk. Please see the discussions in the Home Assistant community**
 
-    *Blueprint Version: 0.03.00*
+    *Blueprint Version: 0.01.00*
   domain: automation
   input:
     power_sensor_1_entity:
@@ -149,6 +149,8 @@ variables:
   var_tesla_charging_amps_number_entity: !input tesla_charging_amps_number_entity
 
 trigger:
+  - platform: sun
+    event: sunrise
   - platform: numeric_state
     entity_id: !input power_sensor_1_entity
     above: !input power_sensor_1_max_value
