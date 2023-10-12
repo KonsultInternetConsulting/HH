@@ -24,7 +24,7 @@ blueprint:
               device_class: power
     power_sensor_1_max_value:
       name: Power Sensor 1 Trigger Max Value (W)
-      description: This is a absolute max value which will trigger a drop in charging amps.
+      description: This is a absolute max value which will trigger a drop in charging amps to 0.
       default: 0
       selector:
         number:
@@ -33,8 +33,8 @@ blueprint:
           mode: box
     power_sensor_1_charge_upper_value:
       name: Power Sensor 1 Trigger Upper Value (W)
-      description: This is the upper value for the power sensor which will trigger a drop in charging amps.
-      default: -500
+      description: This is the upper value for the power sensor which will trigger a drop in charging amps by 1 amp.
+      default: -800
       selector:
         number:
           min: -20000
@@ -43,7 +43,7 @@ blueprint:
     power_sensor_1_charge_lower_value:
       name: Power Sensor 1 Charging Lower Value (W)
       description: This is the value for the power sensor which allows the charger to increase amps.
-      default: -2500
+      default: -1100
       selector:
         number:
           min: -20000
@@ -195,10 +195,10 @@ action:
     then:
       - service: number.set_value
         data:
-          value: !input "tesla_charging_amps_lower_value"
+          value: "{{ states(var_tesla_charging_amps_number_entity) | int - 1 }}"
         target:
           entity_id: !input tesla_charging_amps_number_entity
-        alias: Cut Tesla charging rate significantly
+        alias: Cut Tesla charging rate by 1
     else:
       - condition: numeric_state
         entity_id: !input power_sensor_1_entity
@@ -214,6 +214,17 @@ action:
         data:
           value: "{{ states(var_tesla_charging_amps_number_entity) | int + 1 }}"
         alias: Increase charging rate by 1 amp
+  - if:
+      - condition: numeric_state
+        entity_id: !input power_sensor_1_entity
+        above: !input "power_sensor_1_max_value"
+    then:
+      - service: number.set_value
+        data:
+          value: !input "tesla_charging_amps_lower_value"
+        target:
+          entity_id: !input tesla_charging_amps_number_entity
+        alias: Cut Tesla charging rate significantly
     alias: >-
       Adjust Tesla charging amp based on Home EV Charging Max Power and Target values
 mode: restart
